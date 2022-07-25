@@ -6,8 +6,7 @@
 # use Math::Prime::Util::GMP 'gcd';     # ...is faster, but not a core module
 # use Math::Prime::Util::GMP 'totient'; # ...is screamingly fast!
 
-use strict; use warnings;
-use Memoize;
+use Memoize; use strict; use warnings;
 memoize('totient');  #good idea, unless using GMP
 #memoize('gcd');     #bad idea, runs slower
 
