@@ -1,20 +1,19 @@
-//scala3
-//time scala ch-2.scala
+// scala3
 
 def category( hand: Seq[(Int,Int)] ) = {
-    val s = hand.map(_._1).sorted.reverse  //suits descending
-    val r = hand.map(_._2).sorted.reverse  //ranks descending
+    val s = hand.map(_._1).sorted   // suits 0 -> 3
+    val r = hand.map(_._2).sorted   // ranks 0 -> 12
     val all_same_suit = s(0)==s(4)
     val rs = r.mkString(" ")
-    if      ( all_same_suit && rs=="12 11 10 9 0" )                  { "Royal flush"   }
-    else if ( all_same_suit && r(0) == r(4)+4 )                      { "Straigh flush" }
+    if      ( all_same_suit && rs=="0 9 10 11 12" )                  { "Royal flush"   } // high ace
+    else if ( all_same_suit && r(0) == r(4)-4 )                      { "Straigh flush" }
     else if ( r(0)==r(3) )                                           { "Four"          }
     else if ( r(1)==r(4) )                                           { "Four"          }
     else if ( r(0)==r(2) && r(3)==r(4) )                             { "Full house"    }
     else if ( r(0)==r(1) && r(2)==r(4) )                             { "Full house"    }
     else if ( all_same_suit )                                        { "Flush"         }
-    else if ( (r(1)-r(0))*(r(2)-r(1))*(r(3)-r(2))*(r(4)-r(3)) == 1 ) { "Straight"      }
-    else if ( rs=="12 11 10 9 0" )                                   { "Straight"      } 
+    else if ( (r(0)-r(1))*(r(1)-r(2))*(r(2)-r(3))*(r(3)-r(4)) == 1 ) { "Straight"      } // all diff 1
+    else if ( rs=="0 9 10 11 12" )                                   { "Straight"      } // high ace
     else if ( r(0)==r(2) || r(1)==r(3) || r(2)==r(4) )               { "Three"         }
     else if ( r(0)==r(1) && r(2)==r(3)               )               { "Two pair"      } // 2+2+1
     else if ( r(0)==r(1) && r(3)==r(4)               )               { "Two pair"      } // 2+1+2
@@ -41,3 +40,21 @@ val count = (for {
 val countAll = count + (("Total",count.values.sum))
 
 @main def main() = countAll.keys.toSeq.sortBy(countAll(_)).map(cat=>println(f"${cat+":"}%-20s ${countAll(cat)}%7d"))
+
+/*
+run:
+scala ch-2.scala            # 5.0sec
+scala -save ch-2.scala      # 2.7sec 2nd time
+output:
+Royal flush:               4
+Straigh flush:            36
+Four:                    624
+Full house:             3744
+Flush:                  5108
+Straight:              10200
+Three:                 54912
+Two pair:             123552
+Pair:                1098240
+Hand:                1302540
+Total:               2598960
+*/
